@@ -1,6 +1,6 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
-var webSocketsServerPort = 1337;
+var webSocketsServerPort = 8080;
 var users = [];
 
 var server = http.createServer(function(request, response) {
