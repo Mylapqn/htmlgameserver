@@ -39,7 +39,7 @@ wsServer.on('request', function(request) {
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
   console.log(" new users: "+users.length);
  
-    sendAll(JSON.stringify({type:"message", data: "User " + userID + "Has joined the chat. "}));
+    sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat. "}));
 
   userCount++;
   connection.sendUTF("ConnectionServerTest");
@@ -60,7 +60,7 @@ wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection closed. UserID = ' + userID);
     userCount--;
     users.splice(userID, 1);
-    sendAll(JSON.stringify({type:"message", data: "User " + userID + "Has left the chat. "}));
+    sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
 
     console.log("remaining users: "+users.length);
   });
