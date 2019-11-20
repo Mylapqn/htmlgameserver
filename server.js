@@ -5,7 +5,7 @@ var server = http.createServer(function(request, response) {
 });
 var WebSocketServer = require('websocket').server;
 
-var webSocketsServerPort = 8000;
+var webSocketsServerPort = 38210;
 var RSserver_port = process.env.PORT;
 var RSserver_ip_address = process.env.IP;
 
