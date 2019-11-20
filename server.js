@@ -1,6 +1,10 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
-var webSocketsServerPort = 8080;
+var webSocketsServerPort = 8000;
+
+var RSserver_port = process.env.OPENSHIFT_NODEJS_PORT;
+var RSserver_ip_address = process.env.OPENSHIFT_NODEJS_IP;
+
 var users = [];
 
 var server = http.createServer(function(request, response) {
@@ -8,7 +12,8 @@ var server = http.createServer(function(request, response) {
   // server we don't have to implement anything.
 });
 server.listen(webSocketsServerPort, function() {
-    console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
+  console.log((new Date()) + " RS Server is listening on IP " + RSserver_ip_address + " and port " + RSserver_port);
+  console.log((new Date()) + " WS Server is listening on port " + webSocketsServerPort);
 });
 
 // create the server
