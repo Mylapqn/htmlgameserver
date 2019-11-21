@@ -69,7 +69,7 @@ wsServer.on('request', function(request) {
     users.splice(userID, 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
     if(userID < users.length){
-      availableIDs.push(UserID);
+      availableIDs.push(userID);
     }
 
     console.log("remaining users: "+users.length);
