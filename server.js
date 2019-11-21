@@ -77,7 +77,7 @@ wsServer.on('request', function(request) {
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
     if(userID < users.length){
       availableIDs.push(userID);
-      shiftAllIDs(UserID);
+      shiftAllIDs(userID);
     }
     sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
 
