@@ -10,6 +10,7 @@ var RSserver_ip_address = process.env.IP;
 var webSocketsServerPort = RSserver_port;
 
 var users = [];
+var availableIDs = [];
 
 server.listen(webSocketsServerPort, function() {
   console.log((new Date()) + " RS Server is listening on IP " + RSserver_ip_address + " and port " + RSserver_port);
@@ -33,7 +34,14 @@ function sendAll(s){
 wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
-  var userID = users.length;
+  var userID;
+  if(availableIDs.length > 0){
+    userID = availableIDs[0];
+    availableIDs.splice(0, 1);
+  }
+  else {
+    userID = users.length;
+  }
   console.log(" users: "+users.length);
   users.push(connection);
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
@@ -60,6 +68,9 @@ wsServer.on('request', function(request) {
     userCount--;
     users.splice(userID, 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
+    if(UserID < users.length){
+      availableIDs.push(UserID);
+    }
 
     console.log("remaining users: "+users.length);
   });
