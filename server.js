@@ -33,7 +33,7 @@ function sendAll(s){
 wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
-  var userID = userCount;
+  var userID = users.length;
   console.log(" users: "+users.length);
   users.push(connection);
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
