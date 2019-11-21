@@ -42,7 +42,6 @@ wsServer.on('request', function(request) {
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat. "}));
 
   userCount++;
-  connection.sendUTF("ConnectionServerTest");
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
 
   // This is the most important callback for us, we'll handle
