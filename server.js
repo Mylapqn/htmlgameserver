@@ -32,7 +32,7 @@ function sendAll(s){
 function shiftAllIDs(from){
   for (var i=from; i<users.length;i++){
     users[i].emit('shiftID');
-    users[i].sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
+    users[i].sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: i-1}));
   }
 }
 
