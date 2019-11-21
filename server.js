@@ -65,7 +65,7 @@ wsServer.on('request', function(request) {
     if (message.type === 'utf8') {
         console.log((new Date()) + ' New message: ' + message.utf8Data);
         
-          sendAll(JSON.stringify({type:"message", data: "User " + userID + ": " + message.utf8Data}));
+          sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
         
     }
   });
