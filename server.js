@@ -41,13 +41,13 @@ wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
   var userID;
-  if(availableIDs.length > 0){
+  /*if(availableIDs.length > 0){
     userID = availableIDs[0];
     availableIDs.splice(0, 1);
   }
-  else {
+  else {*/
     userID = users.length;
-  }
+  //}
   console.log(" users: "+users.length);
   users.push(connection);
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
@@ -76,7 +76,7 @@ wsServer.on('request', function(request) {
     users.splice(userID, 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
     if(userID < users.length){
-      availableIDs.push(userID);
+      //availableIDs.push(userID);
       shiftAllIDs(userID);
     }
     sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
