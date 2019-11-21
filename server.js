@@ -29,6 +29,12 @@ function sendAll(s){
     users[i].sendUTF(s);
   }
 }
+function shiftAllIDs(from){
+  for (var i=from; i<users.length;i++){
+    users[i].emit('shiftID');
+    users[i].sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
+  }
+}
 
 // WebSocket server
 wsServer.on('request', function(request) {
@@ -71,9 +77,14 @@ wsServer.on('request', function(request) {
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
     if(userID < users.length){
       availableIDs.push(userID);
+      shiftAllIDs(UserID);
     }
     sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
 
     console.log("remaining users: "+users.length);
+  });
+  connection.on('shiftID', function(){
+    console.log("shifting ID from" + userID);
+    userID--;
   });
 });
