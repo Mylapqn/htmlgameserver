@@ -58,6 +58,7 @@ wsServer.on('request', function(request) {
   sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
 
   userCount++;
+  connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
 
   // This is the most important callback for us, we'll handle
