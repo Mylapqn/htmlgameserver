@@ -47,7 +47,8 @@ wsServer.on('request', function(request) {
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
   console.log(" new users: "+users.length);
  
-    sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat. "}));
+  sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
+  sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
 
   userCount++;
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
@@ -71,6 +72,7 @@ wsServer.on('request', function(request) {
     if(userID < users.length){
       availableIDs.push(userID);
     }
+    sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
 
     console.log("remaining users: "+users.length);
   });
