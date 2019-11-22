@@ -50,7 +50,7 @@ wsServer.on('request', function(request) {
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
-  
+
   console.log(" users: "+users.length);
   users.push(connection);
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
@@ -66,7 +66,7 @@ wsServer.on('request', function(request) {
   // all messages from users here.
   connection.on('message', function(message) {
     if (message.type === 'utf8') {
-        console.log((new Date()) + ' New message: ' + message.utf8Data);
+        //console.log((new Date()) + ' New message: ' + message.utf8Data);
         
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
         
