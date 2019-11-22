@@ -83,6 +83,7 @@ wsServer.on('request', function(request) {
       shiftAllIDs(userID);
     }
     sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
+    sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
 
     console.log("remaining users: "+users.length);
   });
