@@ -98,12 +98,12 @@ wsServer.on('request', function(request) {
     userCount--;
     users.splice(userID, 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
+    sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
+    sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
     if(userID < users.length){
       //availableIDs.push(userID);
       shiftAllIDs(userID);
     }
-    sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
-    sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
 
     console.log("remaining users: "+users.length);
   });
