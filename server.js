@@ -20,7 +20,7 @@ server.listen(webSocketsServerPort, function() {
 });
 
 setInterval(function(){
-  for (var i=from; i<users.length;i++){
+  for (var i=0; i<users.length;i++){
     users[i].emit('pingTimer');
   }
 }, 1000);
