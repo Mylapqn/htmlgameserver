@@ -115,6 +115,7 @@ wsServer.on('request', function(request) {
   connection.on('pingTimer', function(){
     pingTimeout++;
     if(pingTimeout > maxPingTimeout){
+      console.log("Disconnecting user " + userID + " due to inactivity");
       connection.close();
     }
   });
