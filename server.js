@@ -9,6 +9,8 @@ var RSserver_port = process.env.PORT;
 var RSserver_ip_address = process.env.IP;
 var webSocketsServerPort = RSserver_port;
 
+var maxPingTimeout = 5;
+
 var users = [];
 var availableIDs = [];
 
@@ -16,6 +18,12 @@ server.listen(webSocketsServerPort, function() {
   console.log((new Date()) + " RS Server is listening on IP " + RSserver_ip_address + " and port " + RSserver_port);
   console.log((new Date()) + " WS Server is listening on port " + webSocketsServerPort);
 });
+
+setInterval(function(){
+  for (var i=from; i<users.length;i++){
+    users[i].emit('pingTimer');
+  }
+}, 1000);
 
 // create the server
 wsServer = new WebSocketServer({
@@ -41,6 +49,8 @@ wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
   var userID;
+
+  var pingTimeout = 0;
   /*if(availableIDs.length > 0){
     userID = availableIDs[0];
     availableIDs.splice(0, 1);
@@ -67,8 +77,18 @@ wsServer.on('request', function(request) {
   connection.on('message', function(message) {
     if (message.type === 'utf8') {
         //console.log((new Date()) + ' New message: ' + message.utf8Data);
-        
+        messageData = JSON.parse(message.utf8Data);
+        if(messageData.type != "technical"){
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
+        }
+        else{
+          if(messageData.subtype == "ping"){
+            pingTimeout = 0;
+            if(messageData.requestReply){
+              connection.sendUTF(JSON.stringify({type:"technical", subtype:"ping", requestReply:false}));
+            }
+          }
+        }
         
     }
   });
@@ -90,5 +110,12 @@ wsServer.on('request', function(request) {
   connection.on('shiftID', function(){
     console.log("shifting ID from" + userID);
     userID--;
+  });
+
+  connection.on('pingTimer', function(){
+    pingTimeout++;
+    if(pingTimeout > maxPingTimeout){
+      connection.close();
+    }
   });
 });
