@@ -64,6 +64,7 @@ wsServer.on('request', function(request) {
     nextUserID++;
 
     userCount++;
+    users.push({connection:connection, id:userID});
 
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
@@ -75,7 +76,6 @@ wsServer.on('request', function(request) {
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"playerIDs", data: userIDs.toString()}));
   
   console.log(" users: "+userCount);
-  users.push({connection:connection, id:userID});
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
   console.log(" new users: "+userCount);
   
