@@ -9,7 +9,7 @@ var RSserver_port = process.env.PORT;
 var RSserver_ip_address = process.env.IP;
 var webSocketsServerPort = RSserver_port;
 
-var maxPingTimeout = 5;
+var maxPingTimeout = 10;
 
 var users = [];
 var availableIDs = [];
