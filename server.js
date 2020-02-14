@@ -72,7 +72,7 @@ wsServer.on('request', function(request) {
   for(var i;i<users.length;i++){
     userIDs.push(users[i].id);
   }
-  connection.sendUTF(JSON.stringify({type:"technical", subtype:"playerIDs", data: userIDs}));
+  connection.sendUTF(JSON.stringify({type:"technical", subtype:"playerIDs", data: userIDs.toString()}));
   
   console.log(" users: "+userCount);
   users.push({connection:connection, id:userID});
