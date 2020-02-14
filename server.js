@@ -69,7 +69,7 @@ wsServer.on('request', function(request) {
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
-  var userIDs = "";
+  var userIDs = [];
   for(var i=0;i<users.length;i++){
     userIDs.push(users[i].id);
   }
