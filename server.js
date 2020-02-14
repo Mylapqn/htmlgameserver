@@ -14,6 +14,8 @@ var maxPingTimeout = 5;
 var users = [];
 var availableIDs = [];
 
+
+
 var nextUserID = 0;
 
 server.listen(webSocketsServerPort, function() {
@@ -23,7 +25,7 @@ server.listen(webSocketsServerPort, function() {
 
 setInterval(function(){
   for (var i=0; i<users.length;i++){
-    users[i].emit('pingTimer');
+    users[i].connection.emit('pingTimer');
   }
 }, 1000);
 
@@ -36,19 +38,19 @@ var userCount = 0;
 
 function sendAll(s){
   for (var i=0; i<users.length;i++){
-    users[i].sendUTF(s);
+    users[i].connection.sendUTF(s);
   }
 }
 function shiftAllIDs(from){
   for (var i=from; i<users.length;i++){
-    users[i].emit('shiftID');
-    users[i].sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: i}));
+    users[i].connection.emit('shiftID');
+    users[i].connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: i}));
   }
 }
 
 // WebSocket server
 wsServer.on('request', function(request) {
-    console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+  console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
   var userID;
 
@@ -60,20 +62,30 @@ wsServer.on('request', function(request) {
   else {*/
     userID = nextUserID;
     nextUserID++;
+
+    userCount++;
+
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
-
-  console.log(" users: "+users.length);
-  users.push(connection);
+  var userIDs = [];
+  for(var i;i<users.length;i++){
+    userIDs.push(users[i].id);
+  }
+  connection.sendUTF(JSON.stringify({type:"technical", subtype:"playerIDs", data: userIDs}));
+  
+  console.log(" users: "+userCount);
+  users.push({connection:connection, id:userID});
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
-  console.log(" new users: "+users.length);
- 
+  console.log(" new users: "+userCount);
+  
   sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
   sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID}));
-  sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
+  sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
 
-  userCount++;
+
+  connection.sendUTF(JSON.stringify({type:"technical", subtype:"start"}));
+
 
   // This is the most important callback for us, we'll handle
   // all messages from users here.
@@ -101,8 +113,8 @@ wsServer.on('request', function(request) {
     userCount--;
     users.splice(userID, 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
-    sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: users.length}));
     sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
+    sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
     if(userID < users.length){
       //availableIDs.push(userID);
       //shiftAllIDs(userID);
