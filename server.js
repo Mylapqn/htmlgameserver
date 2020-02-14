@@ -112,7 +112,7 @@ wsServer.on('request', function(request) {
   connection.on('close', function(connection) {
     console.log((new Date()) + ' Connection closed. UserID = ' + userID);
     userCount--;
-    users.splice(userID, 1);
+    users.splice(userIDtoIndex(userID), 1);
     sendAll(JSON.stringify({type:"info", data: "User " + userID + " has left the chat. "}));
     sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
     sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
@@ -136,3 +136,13 @@ wsServer.on('request', function(request) {
     }
   });
 });
+
+function userIDtoIndex(userID) {
+	for (var i = 0; i < users.length; i++) {
+		//console.log("Player index from id: scanning index " + i + " for ID " + playerID + ". Found ID: " + players[i].ID);
+		if (users[i].id == userID) {
+			return i;
+		}
+	}
+	return null;
+}
