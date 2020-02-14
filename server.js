@@ -69,9 +69,11 @@ wsServer.on('request', function(request) {
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
-  var userIDs = [];
+  var userIDs = "";
   for(var i;i<users.length;i++){
-    userIDs.push(users[i].id);
+    userIDs+=users[i].id;
+    if (i<users.length - 1)
+    userIDs+=",";
   }
   console.log("PlayerIDs",userIDs, users);
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"playerIDs", data: userIDs.toString()}));
