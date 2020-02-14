@@ -14,6 +14,8 @@ var maxPingTimeout = 5;
 var users = [];
 var availableIDs = [];
 
+var nextUserID = 0;
+
 server.listen(webSocketsServerPort, function() {
   console.log((new Date()) + " RS Server is listening on IP " + RSserver_ip_address + " and port " + RSserver_port);
   console.log((new Date()) + " WS Server is listening on port " + webSocketsServerPort);
@@ -56,7 +58,8 @@ wsServer.on('request', function(request) {
     availableIDs.splice(0, 1);
   }
   else {*/
-    userID = users.length;
+    userID = nextUserID;
+    nextUserID++;
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: userID}));
@@ -102,15 +105,15 @@ wsServer.on('request', function(request) {
     sendAll(JSON.stringify({type:"technical", subtype:"leaveUser",data: userID}));
     if(userID < users.length){
       //availableIDs.push(userID);
-      shiftAllIDs(userID);
+      //shiftAllIDs(userID);
     }
 
     console.log("remaining users: "+users.length);
   });
-  connection.on('shiftID', function(){
+  /*connection.on('shiftID', function(){
     console.log("shifting ID from" + userID);
     userID--;
-  });
+  });*/
 
   connection.on('pingTimer', function(){
     pingTimeout++;
