@@ -99,7 +99,7 @@ wsServer.on('request', function(request) {
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
         }
         else{
-          if(messageData.subtype == "initName"){
+          if(messageData.subtype == "initData"){
             userName = messageData.name;
             sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
             sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID,name:userName,color:messageData.color}));
