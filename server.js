@@ -9,7 +9,7 @@ var RSserver_port = process.env.PORT;
 var RSserver_ip_address = process.env.IP;
 var webSocketsServerPort = RSserver_port;
 
-var maxPingTimeout = 10;
+//var maxPingTimeout = 10;
 
 var users = [];
 var availableIDs = [];
@@ -23,15 +23,18 @@ server.listen(webSocketsServerPort, function() {
   console.log((new Date()) + " WS Server is listening on port " + webSocketsServerPort);
 });
 
-setInterval(function(){
+/*setInterval(function(){
   for (var i=0; i<users.length;i++){
     users[i].connection.emit('pingTimer');
   }
-}, 1000);
+}, 1000);*/
 
 // create the server
 wsServer = new WebSocketServer({
-  httpServer: server
+  httpServer: server,
+  keepaliveInterval: 5000,
+  keepaliveGracePeriod: 1000,
+  closeTimeout: 1000
 });
 
 var userCount = 0;
@@ -41,12 +44,12 @@ function sendAll(s){
     users[i].connection.sendUTF(s);
   }
 }
-function shiftAllIDs(from){
+/*function shiftAllIDs(from){
   for (var i=from; i<users.length;i++){
     users[i].connection.emit('shiftID');
     users[i].connection.sendUTF(JSON.stringify({type:"technical", subtype:"userID", data: i}));
   }
-}
+}*/
 
 // WebSocket server
 wsServer.on('request', function(request) {
@@ -54,7 +57,7 @@ wsServer.on('request', function(request) {
   var connection = request.accept(null, request.origin);
   var userID;
 
-  var pingTimeout = 0;
+  //var pingTimeout = 0;
   /*if(availableIDs.length > 0){
     userID = availableIDs[0];
     availableIDs.splice(0, 1);
@@ -98,12 +101,12 @@ wsServer.on('request', function(request) {
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
         }
         else{
-          if(messageData.subtype == "ping"){
+          /*if(messageData.subtype == "ping"){
             pingTimeout = 0;
             if(messageData.requestReply){
               connection.sendUTF(JSON.stringify({type:"technical", subtype:"ping", requestReply:false}));
             }
-          }
+          }*/
         }
         
     }
@@ -128,13 +131,13 @@ wsServer.on('request', function(request) {
     userID--;
   });*/
 
-  connection.on('pingTimer', function(){
+  /*connection.on('pingTimer', function(){
     pingTimeout++;
     if(pingTimeout > maxPingTimeout){
       console.log("Disconnecting user " + userID + " due to inactivity");
       connection.close();
     }
-  });
+  });*/
 });
 
 function userIDtoIndex(userID) {
