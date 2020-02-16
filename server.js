@@ -55,7 +55,7 @@ function sendAll(s){
 wsServer.on('request', function(request) {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
-  var userID;
+  var userID, userName;
 
   //var pingTimeout = 0;
   /*if(availableIDs.length > 0){
@@ -83,9 +83,7 @@ wsServer.on('request', function(request) {
   console.log((new Date()) + ' Connection accepted. UserID = ' + userID);
   console.log(" new users: "+userCount);
   
-  sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
-  sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID}));
-  sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
+
 
 
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"start"}));
@@ -101,6 +99,12 @@ wsServer.on('request', function(request) {
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
         }
         else{
+          if(messageData.subtype == "initName"){
+            userName = messageData.name;
+            sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
+            sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID,name:userName}));
+            sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
+          }
           /*if(messageData.subtype == "ping"){
             pingTimeout = 0;
             if(messageData.requestReply){
