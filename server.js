@@ -102,7 +102,7 @@ wsServer.on('request', function(request) {
           if(messageData.subtype == "initName"){
             userName = messageData.name;
             sendAll(JSON.stringify({type:"info", data: "User " + userID + " has joined the chat."}));
-            sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID,name:userName}));
+            sendAll(JSON.stringify({type:"technical", subtype:"newUser",data: userID,name:userName,color:messageData.color}));
             sendAll(JSON.stringify({type:"technical", subtype:"userCount",data: userCount}));
           }
           /*if(messageData.subtype == "ping"){
