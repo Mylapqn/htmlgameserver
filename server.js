@@ -67,7 +67,7 @@ wsServer.on('request', function(request) {
     nextUserID++;
 
     userCount++;
-    users.push({connection:connection, id:userID, score:0});
+    users.push({connection:connection, id:userID/*, score:0*/});
 
   //}
   connection.sendUTF(JSON.stringify({type:"technical", subtype:"init", data: userID}));
@@ -98,10 +98,10 @@ wsServer.on('request', function(request) {
         
         if(messageData.type != "technical"){
           sendAll(JSON.stringify({type:"message", userID:userID, data: message.utf8Data}));
-          if(messageData.type == "score"){
+          /*if(messageData.type == "score"){
             var messageContent = JSON.parse(messageData.data);
             users[userIDtoIndex(messageContent.killer)].score = messageContent.score;
-          }
+          }*/
         }
         else{
           if(messageData.subtype == "initData"){
