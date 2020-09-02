@@ -5,8 +5,11 @@ var server = http.createServer(function(request, response) {
 });
 var WebSocketServer = require('websocket').server;
 
-var RSserver_port = process.env.PORT;
+/*var RSserver_port = process.env.PORT;
 var RSserver_ip_address = process.env.IP;
+var webSocketsServerPort = RSserver_port;*/
+var RSserver_port = 20002;
+var RSserver_ip_address = "wss://stuffgame.ws.coal.games/";
 var webSocketsServerPort = RSserver_port;
 
 //var maxPingTimeout = 10;
@@ -19,7 +22,7 @@ var availableIDs = [];
 var nextUserID = 0;
 
 server.listen(webSocketsServerPort, function() {
-  console.log((new Date()) + " RS Server is listening on IP " + RSserver_ip_address + " and port " + RSserver_port);
+  console.log((new Date()) + " RS Server is listening on address " + RSserver_ip_address + " and port " + RSserver_port);
   console.log((new Date()) + " WS Server is listening on port " + webSocketsServerPort);
 });
 
