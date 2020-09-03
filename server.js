@@ -1,12 +1,8 @@
 //#region INIT
-console.log("Start");
 var http = require('http');
-console.log("a");
 var server = http.createServer(function (request, response) {
 });
-console.log("b");
 var WebSocketServer = require('websocket').server;
-console.log("c");
 var port = 20002;
 var listenAddress = "wss://stuffgame.ws.coal.games/";
 server.listen(port, function () {
@@ -19,24 +15,43 @@ wsServer = new WebSocketServer({
   keepaliveGracePeriod: 1000,
   closeTimeout: 1000
 });
+wsServer.on('request', request => onRequest);
 //#endregion
 
-wsServer.on('request', request => onRequest);
+var nextUserID = 0;
+var users = new Array();
+
+function User(connection) {
+  this.id = nextUserID;
+  nextUserID++;
+  this.connection = null;
+  return this.id;
+}
+
+
 
 function onRequest(request) {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
-  connection.on('message', message => onMessage);
-  connection.on('close', e => onClose);
+  var user = new User(connection);
+  users.push(user);
+
+  connection.on('message', message => {
+    onMessage(message, user.id);
+  });
+  connection.on('close', e => {
+    onClose(e, user.id);
+  });
 }
 
-function onMessage(message) {
+function onMessage(message, userID) {
 
   if (message.type === 'utf8') {
     messageData = JSON.parse(message.utf8Data);
   }
   if (message.type === "binary") {
     var receiveBuffer = message.binaryData;
+    console.log("Received message from User "+userID)
     console.log(receiveBuffer);
     var bytesInput = [receiveBuffer.readDoubleLE(0), receiveBuffer.readDoubleLE(8)];
     var bytesRot = receiveBuffer.readFloatLE(16);
@@ -48,6 +63,6 @@ function onMessage(message) {
   }
 }
 
-function onClose(e) {
-  console.log((new Date()) + " Connection closed.");
+function onClose(e,userID) {
+  console.log((new Date()) + " Connection closed from User " + userID);
 }
