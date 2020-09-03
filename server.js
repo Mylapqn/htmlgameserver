@@ -90,6 +90,6 @@ function readBufferString(buffer, position, length) {
     bytesString.push(buffer.readUInt8(position + i));
     
   }
-  var stringDecoded = new TextEncoder().decode(bytesString);
+  var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;
 }
