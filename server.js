@@ -9,7 +9,7 @@ var WebSocketServer = require('websocket').server;
 console.log("c");
 var port = 20002;
 var listenAddress = "wss://stuffgame.ws.coal.games/";
-server.listen(webSocketsServerPort, function () {
+server.listen(port, function () {
   console.log((new Date()) + " WS Server is listening on address " + listenAddress + " and port " + port);
 });
 
