@@ -53,16 +53,43 @@ function onMessage(message, userID) {
     var receiveBuffer = message.binaryData;
     console.log("Received message from User "+userID)
     console.log(receiveBuffer);
-    var bytesInput = [receiveBuffer.readDoubleLE(0), receiveBuffer.readDoubleLE(8)];
-    var bytesRot = receiveBuffer.readFloatLE(16);
-    var bytesShooting = receiveBuffer.readUInt8(20);
-    console.log("Inp: " + bytesInput);
-    console.log("Rot: " + bytesRot);
-    console.log("Sht: " + bytesShooting);
+    var type = receiveBuffer.readUInt8(0);
+    if (type == 1) {
+      var bytesInput = [receiveBuffer.readDoubleLE(1), receiveBuffer.readDoubleLE(9)];
+      var bytesRot = receiveBuffer.readFloatLE(17);
+      var bytesShooting = receiveBuffer.readUInt8(21);
+      console.log("Inp: " + bytesInput);
+      console.log("Rot: " + bytesRot);
+      console.log("Sht: " + bytesShooting);
+    }
+    if (type == 2) {
+      var nameLength = receiveBuffer.readUInt8(1);
+      var name = readBufferString(receiveBuffer, 2, nameLength);
+      var color = readBufferColor(receiveBuffer, 2 + nameLength);
+      console.log("Nam: " + name);
+      console.log("Col: " + color);
+    }
 
   }
 }
 
 function onClose(e,userID) {
   console.log((new Date()) + " Connection closed from User " + userID);
+}
+
+function readBufferColor(buffer,position) {
+  var r = buffer.readUInt8(position);
+  var g = buffer.readUInt8(position+1);
+  var b = buffer.readUInt8(position + 2);
+  return { r: r, g: g, b: b };
+}
+
+function readBufferString(buffer, position, length) {
+  var bytesString = [];
+  for (var i = 0; i < length; i++) {
+    bytesString.push(buffer.readUInt8(position + i));
+    
+  }
+  var stringDecoded = new TextEncoder().decode(bytesString);
+  return stringDecoded;
 }
