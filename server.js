@@ -112,8 +112,10 @@ function userIDtoIndex(id) {
 }
 
 function removeUser(user) {
-  if (user.connection.connected) {
-    user.connection.close(1000, "User removed");
+  if (user.connection != null) {
+    if (user.connection.connected) {
+      user.connection.close(1000, "User removed");
+    }
   }
   users.splice(userIDtoIndex(user.id), 1);
   
