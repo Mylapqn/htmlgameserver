@@ -1,10 +1,12 @@
 //#region INIT
 console.log("Start");
 var http = require('http');
+console.log("a");
 var server = http.createServer(function (request, response) {
 });
+console.log("b");
 var WebSocketServer = require('websocket').server;
-
+console.log("c");
 var port = 20002;
 var listenAddress = "wss://stuffgame.ws.coal.games/";
 server.listen(webSocketsServerPort, function () {
