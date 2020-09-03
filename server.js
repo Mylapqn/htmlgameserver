@@ -45,6 +45,7 @@ var userCount = 0;
 function sendAll(s){
   for (var i=0; i<users.length;i++){
     users[i].connection.sendUTF(s);
+
   }
 }
 /*function shiftAllIDs(from){
@@ -121,6 +122,17 @@ wsServer.on('request', function(request) {
           }*/
         }
         
+    }
+    if (message.type === "binary") {
+      var receiveBuffer = message.binaryData;
+      console.log(receiveBuffer);
+      var bytesInput = new Float64Array(receiveBuffer, 0, 2);
+      var bytesRot = new Float32Array(receiveBuffer, 16, 1);
+      var bytesShooting = new Uint8Array(receiveBuffer, 20, 1);
+      console.log("Input: " + bytesInput);
+      console.log("Rot: " + bytesRot);
+      console.log("Shooting: " + bytesShooting);
+
     }
   });
 
