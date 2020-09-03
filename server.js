@@ -85,11 +85,11 @@ function readBufferColor(buffer,position) {
 }
 
 function readBufferString(buffer, position, length) {
-  var bytesString = [];
+  var bytesString = new Uint8Array(length);
   for (var i = 0; i < length; i++) {
     bytesString.push(buffer.readUInt8(position + i));
     
   }
-  var stringDecoded = new TextDecoder().decode(Uint8Array.from(bytesString));
+  var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;
 }
