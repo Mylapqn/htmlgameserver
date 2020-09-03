@@ -124,14 +124,14 @@ wsServer.on('request', function(request) {
         
     }
     if (message.type === "binary") {
-      var receiveBuffer = message.binaryData;
+      var receiveBuffer = message.binaryData.buffer;
       console.log(receiveBuffer);
       var bytesInput = new Float64Array(receiveBuffer, 0, 2);
       var bytesRot = new Float32Array(receiveBuffer, 16, 1);
       var bytesShooting = new Uint8Array(receiveBuffer, 20, 1);
-      console.log("Input: " + bytesInput);
+      console.log("Inp: " + bytesInput);
       console.log("Rot: " + bytesRot);
-      console.log("Shooting: " + bytesShooting);
+      console.log("Sht: " + bytesShooting);
 
     }
   });
