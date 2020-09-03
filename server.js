@@ -105,7 +105,7 @@ function findUserWithID(id) {
 
 function userIDtoIndex(id) {
   for (let i = 0; i < users.length; i++) {
-    if (id == users[i].id) return t;
+    if (id == users[i].id) return i;
 
   }
   return null;
