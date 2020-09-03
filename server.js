@@ -15,10 +15,7 @@ wsServer = new WebSocketServer({
   keepaliveGracePeriod: 1000,
   closeTimeout: 1000
 });
-wsServer.on('request', function (e) {
-  console.log("REW");
-  console.log(e);
-});
+wsServer.on('request', onRequest);
 //#endregion
 
 var nextUserID = 0;
