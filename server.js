@@ -51,7 +51,7 @@ function onMessage(message, userID) {
   }
   if (message.type === "binary") {
     var receiveBuffer = message.binaryData;
-    console.log("Received message from User "+userID)
+    console.log("Received message from User " + userID)
     console.log(receiveBuffer);
     var type = receiveBuffer.readUInt8(0);
     if (type == 1) {
@@ -73,13 +73,14 @@ function onMessage(message, userID) {
   }
 }
 
-function onClose(e,userID) {
+function onClose(e, userID) {
   console.log((new Date()) + " Connection closed from User " + userID);
+  removeUser(findUserWithID(userID));
 }
 
-function readBufferColor(buffer,position) {
+function readBufferColor(buffer, position) {
   var r = buffer.readUInt8(position);
-  var g = buffer.readUInt8(position+1);
+  var g = buffer.readUInt8(position + 1);
   var b = buffer.readUInt8(position + 2);
   return { r: r, g: g, b: b };
 }
@@ -88,8 +89,32 @@ function readBufferString(buffer, position, length) {
   var bytesString = new Uint8Array(length);
   for (var i = 0; i < length; i++) {
     bytesString[i] = buffer.readUInt8(position + i);
-    
+
   }
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;
+}
+
+function findUserWithID(id) {
+  for (let i = 0; i < users.length; i++) {
+    if (id == users[i].id) return users[i];
+
+  }
+  return null;
+}
+
+function userIDtoIndex(id) {
+  for (let i = 0; i < users.length; i++) {
+    if (id == users[i].id) return t;
+
+  }
+  return null;
+}
+
+function removeUser(user) {
+  if (user.connection.connected) {
+    user.connection.close(1000, "User removed");
+  }
+  users.splice(userIDtoIndex(user.id), 1);
+  
 }
