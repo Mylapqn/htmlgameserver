@@ -237,6 +237,8 @@ function readBufferColor(buffer, position) {
 function readBufferUInt8(buffer, position) {
   let bytesInt = new Uint8Array(buffer, position, 1);
   let value = bytesInt[0];
+  console.log("UINT: " + position);
+  console.log(bytesInt);
   return value;
 }
 function readBufferUInt16(buffer, position) {
