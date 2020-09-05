@@ -51,9 +51,10 @@ function update() {
     var player = user.player;
 
     if (player == undefined) {
-      console.log("no player again wtf");
+      console.log("no player again wtf" + user.id);
     }
     else {
+      console.log("yes player again"+user.id);
       player.velocity = vector2add(player.velocity, player.input);
       player.pos = vector2add(player.pos, player.velocity);
       player.rot = player.targetRot;
