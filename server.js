@@ -173,7 +173,8 @@ function onMessage(message, userID) {
     var receiveBuffer = message;
     console.log("Received message from User " + userID);
     console.log(receiveBuffer);
-    var type = receiveBuffer.readUInt8(0);
+  var type = receiveBuffer.readUInt8(0);
+  console.log("TYPE:" + type);
     if (type == 1) {
       var bytesInput = [receiveBuffer.readDoubleLE(1), receiveBuffer.readDoubleLE(9)];
       var bytesRot = receiveBuffer.readFloatLE(17);
@@ -217,11 +218,7 @@ function readBufferColor(buffer, position) {
 }
 
 function readBufferString(buffer, position, length) {
-  var bytesString = new Uint8Array(length);
-  for (var i = 0; i < length; i++) {
-    bytesString[i] = buffer.readUInt8(position + i);
-
-  }
+  var bytesString = new Uint8Array(buffer,position,length);
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;
 }
