@@ -176,8 +176,8 @@ function onMessage(message, userID) {
   pos += 1;
   console.log("TYPE:" + type);
   if (type == 1) {
-    let input = readBufferVector64(receiveBuffer, pos);
-    pos += 16;
+    let input = readBufferVector32(receiveBuffer, pos);
+    pos += 8;
     let rot = readBufferFloat32(receiveBuffer, pos);
     pos += 4;
     let shoot = readBufferUInt8(receiveBuffer, pos);
