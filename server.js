@@ -129,7 +129,7 @@ function serializeNewPlayer(user) {
   console.log("TRYING SERIALISATION " + p.id + " " + buf.byteLength + " " + p.nameLength);
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferUInt8(buf, pos, p.ai);
-  pos += writeBufferUInt8(buf, pos, p.nameLength);
+  pos += writeBufferUInt8(buf, pos, p.nameLength+5);
   pos += writeBufferString(buf, pos, p.nameLength, p.name);
   pos += writeBufferColor(buf, pos, p.color);
   console.log("NEW PLAYER SERIALISED");
@@ -303,7 +303,6 @@ function writeBufferColor(buffer, position, color) {
 }
 
 function writeBufferString(buffer, position, length, string) {
-  length += 5;
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
   console.log(new TextEncoder().encode(string).byteLength+" "+length);
