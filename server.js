@@ -51,13 +51,12 @@ function update() {
     var player = user.player;
 
     if (player == undefined) {
-      console.log("no player again wtf" + user.id);
     }
     else {
-      console.log("yes player again"+user.id);
       player.velocity = vector2add(player.velocity, player.input);
       player.pos = vector2add(player.pos, player.velocity);
       player.rot = player.targetRot;
+      console.log("Velocity of player "+player.id+": "+player.velocity.x);
 
     }
   });
@@ -114,7 +113,7 @@ UPDATE MSG STRUCTURE:
 
 function serializeNewPlayer(user) {
   let p = user.player;
-  let buf = new Buffer(7 + p.nameLength);
+  let buf = new ArrayBuffer(7 + p.nameLength);
   let pos = 0;
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferUInt8(buf, pos, p.ai);
@@ -140,7 +139,7 @@ function serializePlayer(user) {
 }
 
 function generateUpdateData() {
-  var sendBuffer = new Buffer(1024);
+  var sendBuffer = Buffer.alloc(1024);
 
 }
 
