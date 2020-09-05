@@ -49,9 +49,16 @@ var deltaTime = 1 / 30;
 function update() {
   users.forEach(user => {
     var player = user.player;
-    player.velocity = vector2add(player.velocity, player.input);
-    player.pos = vector2add(player.pos, player.velocity);
-    player.rot = player.targetRot;
+    
+    if (player == undefined) {
+      console.log("no player again wtf");
+    }
+    else {
+      player.velocity = vector2add(player.velocity, player.input);
+      player.pos = vector2add(player.pos, player.velocity);
+      player.rot = player.targetRot;
+
+    }
   });
 }
 
