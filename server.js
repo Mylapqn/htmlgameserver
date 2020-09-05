@@ -121,6 +121,7 @@ function serializeNewPlayer(user) {
   pos += writeBufferUInt8(buf, pos, p.nameLength);
   pos += writeBufferString(buf, pos, p.nameLength, p.name);
   pos += writeBufferColor(buf, pos, p.color);
+  console.log("NEW PLAYER SERIALISED");
   console.log("Pos: " + pos);
   return buf;
 }
@@ -266,7 +267,6 @@ function readBufferVector64(buffer, position) {
   }
   return vector;
 }
-
 function writeBufferColor(buffer, position, color) {
   let bytesColor = new Uint8Array(buffer, position, 3);
   bytesColor[0] = color.r;
@@ -287,30 +287,30 @@ function writeBufferUInt8(buffer, position, value) {
   return 1;
 }
 function writeBufferUInt16(buffer, position, value) {
-  let bytesInt = new Uint16Array(buffer, position, 1);
-  bytesInt[0] = value;
+  let bytesInt = new DataView(buffer, position, 2);
+  bytesInt.setInt16(0, value);
   return 2;
 }
 function writeBufferFloat32(buffer, position, value) {
-  let bytesFloat = new Float32Array(buffer, position, 1);
-  bytesFloat[0] = value;
+  let bytesFloat = new DataView(buffer, position, 4);
+  bytesFloat.setFloat32(0, value);
   return 4;
 }
 function writeBufferFloat64(buffer, position, value) {
-  let bytesDouble = new Float64Array(buffer, position, 1);
-  bytesDouble[0] = value;
+  let bytesDouble = new DataView(buffer, position, 8);
+  bytesDouble.setFloat64(0, value);
   return 8;
 }
 function writeBufferVector32(buffer, position, vector) {
-  let bytesFloat = new Float32Array(buffer, position, 2);
-  bytesFloat[0] = vector.x;
-  bytesFloat[1] = vector.y;
+  let bytesFloat = new DataView(buffer, position, 8);
+  bytesFloat.setFloat32(0, vector.x);
+  bytesFloat.setFloat32(4, vector.y);
   return 8;
 }
 function writeBufferVector64(buffer, position, vector) {
-  let bytesDouble = new Float64Array(buffer, position, 2);
-  bytesDouble[0] = vector.x;
-  bytesDouble[1] = vector.y;
+  let bytesDouble = new DataView(buffer, position, 16);
+  bytesDouble.setFloat64(0, vector.x);
+  bytesDouble.setFloat64(8, vector.y);
   return 16;
 }
 
