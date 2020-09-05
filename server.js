@@ -123,6 +123,7 @@ function serializeNewPlayer(user) {
   let p = user.player;
   let buf = new ArrayBuffer(7 + p.nameLength);
   let pos = 0;
+  console.log("TRYING SERIALISATION " + p.id + " " + buf.byteLength + " " + p.nameLength);
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferUInt8(buf, pos, p.ai);
   pos += writeBufferUInt8(buf, pos, p.nameLength);
@@ -135,7 +136,7 @@ function serializeNewPlayer(user) {
 
 function serializePlayer(user) {
   let p = user.player;
-  let buf = new Buffer(41);
+  let buf = new ArrayBuffer(41);
   let pos = 0;
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferVector64(buf, pos, p.pos);
