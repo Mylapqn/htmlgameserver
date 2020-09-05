@@ -305,6 +305,7 @@ function writeBufferColor(buffer, position, color) {
 function writeBufferString(buffer, position, length, string) {
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
+  console.log("iiiiiiiii"+new TextDecoder().decode(new TextEncoder().encode(string)));
   console.log("KOOOOOOOOOOOOOOOOOOOOO");
   console.log("lllllllll"+string);
   console.log("|||||||||"+new TextDecoder().decode(bytesString));
