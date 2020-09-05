@@ -181,6 +181,9 @@ function onMessage(message, userID) {
       var color = readBufferColor(receiveBuffer, 2 + nameLength);
       console.log("Nam: " + name);
       console.log("Col: " + color);
+      if (user.player == undefined) {
+        console.log("no player wtf");
+      }
       user.player.name = name;
       user.player.color = color;
       user.player.nameLength = nameLength;
