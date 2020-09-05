@@ -57,7 +57,7 @@ function update() {
       player.velocity = vector2add(player.velocity, player.input);
       player.pos = vector2add(player.pos, player.velocity);
       player.rot = player.targetRot;
-      console.log("Velocity of player "+player.id+": "+player.velocity.x);
+      //console.log("Velocity of player "+player.id+": "+player.velocity.x);
 
     }
   });
@@ -153,7 +153,7 @@ function sendAll(data) {
 }
 
 function onConnection(connection) {
-  console.log((new Date()) + ' Connection from origin.' + connection.socket);
+  console.log((new Date()) + ' Connection from origin ' + connection.socket);
   var user = addUser(connection);
   connection.on('message', message => {
     onMessage(message, user.id);
