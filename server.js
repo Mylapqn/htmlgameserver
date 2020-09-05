@@ -136,7 +136,7 @@ function serializeNewPlayer(user) {
 
 function serializePlayer(user) {
   let p = user.player;
-  let buf = new ArrayBuffer(41);
+  let buf = new ArrayBuffer(44);
   let pos = 0;
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferVector64(buf, pos, p.pos);
