@@ -311,7 +311,7 @@ function writeBufferUInt8(buffer, position, value) {
 }
 function writeBufferUInt16(buffer, position, value) {
   let bytesInt = new DataView(buffer, position, 2);
-  bytesInt.setInt16(0, value);
+  bytesInt.setUint16(0, value);
   return 2;
 }
 function writeBufferFloat32(buffer, position, value) {
