@@ -168,7 +168,7 @@ function generateUpdateData() {
     pos += writeBufferBuffer(buf, pos, serializePlayer(u));
   });
   console.log("UPDATE GENERATED, POS: " + pos);
-  return buf.slice(pos);
+  return buf.slice(0,pos);
 
 }
 
