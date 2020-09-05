@@ -255,14 +255,14 @@ function readBufferFloat64(buffer, position) {
 function readBufferVector32(buffer, position) {
   let vector = {
     x: buffer.readFloatBE(position),
-    y: buffer.readFloatBE(position+1)
+    y: buffer.readFloatBE(position+4)
   }
   return vector;
 }
 function readBufferVector64(buffer, position) {
   let vector = {
     x: buffer.readDoubleBE(position),
-    y: buffer.readDoubleBE(position+1)
+    y: buffer.readDoubleBE(position+8)
   }
   return vector;
 }
