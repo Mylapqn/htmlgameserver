@@ -156,7 +156,7 @@ function onConnection(connection) {
   console.log((new Date()) + ' Connection from origin ' + connection.socket);
   var user = addUser(connection);
   connection.on('message', message => {
-    console.log("Message from " + user.id + ":-------: " + message.data);
+    console.log("Message from " + user.id + ":-------: " + message);
     onMessage(message, user.id);
   });
   connection.on('close', e => {
