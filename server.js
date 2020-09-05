@@ -42,7 +42,7 @@ function Player(user) {
   this.input = {x:0,y:0};
   this.targetRot = 0;
   this.rot = 0;
-  this.name = "unnamed";
+  this.name = "unnamedPlayer";
   this.color = { r: 0, g: 0, b: 0 };
 }
 
