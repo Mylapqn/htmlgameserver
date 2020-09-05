@@ -168,7 +168,7 @@ function onMessage(message, userID) {
   console.log("Message from " + userID + ":");
   console.log(message);
 
-  var receiveBuffer = message.buffer;
+  var receiveBuffer = message.buffer.slice(message.byteOffset,message.byteOffset+message.byteLength);
   console.log(receiveBuffer);
   var pos = 0;
   var type = readBufferUInt8(receiveBuffer, pos);
