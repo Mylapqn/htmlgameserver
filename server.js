@@ -24,6 +24,7 @@ setInterval(() => {
 }, 1000 / 30);
 var nextUserID = 0;
 var users = new Array();
+var newUsers = new Array();
 var userCount = 0;
 
 function User(connection) {
@@ -44,6 +45,10 @@ function Player(user) {
   this.rot = 0;
   this.name = "unnamedPlayer";
   this.color = { r: 0, g: 0, b: 0 };
+  this.hp = 10;
+  this.shieldHP = 5;
+  this.shieldEnabled = true;
+  this.shipID = 0;
 }
 
 var deltaTime = 1 / 30;
@@ -61,6 +66,7 @@ function update() {
 
     }
   });
+  generateUpdateData();
 }
 
 /*
@@ -74,13 +80,14 @@ UPDATE MSG STRUCTURE:
     3:color
   ]
   1:PlayerCount
-  40:[
+  41:[
     2:id
     16:pos
     8:vel
     4:rot
     4:hp
     4:shield
+    1:shieldEnabled
     2:shipID
   ]
   1:NewProjectileCount
@@ -128,20 +135,36 @@ function serializeNewPlayer(user) {
 
 function serializePlayer(user) {
   let p = user.player;
-  let buf = new Buffer(40);
-  let bytesID = new Uint16Array(buf, 0, 1);
-  let bytesAI = new Uint8Array(buf, 2, 1);
-  let bytesNameLength = new Uint8Array(buf, 3, 1);
-  writeBufferString(buf, 4, p.nameLength, p.name);
-  writeBufferColor(buf, 4 + p.nameLength, p.color);
+  let buf = new Buffer(41);
+  let pos = 0;
+  pos += writeBufferUInt16(buf, pos, user.id);
+  pos += writeBufferVector64(buf, pos, p.pos);
+  pos += writeBufferVector32(buf, pos, p.velocity);
+  pos += writeBufferFloat32(buf, pos, p.rot);
+  pos += writeBufferFloat32(buf, pos, p.hp);
+  pos += writeBufferFloat32(buf, pos, p.shieldHP);
+  pos += writeBufferFloat32(buf, pos, p.shieldEnabled);
+  pos += writeBufferUInt16(but, pos, p.shipID);
 
   bytesID[0] = user.id;
   bytesAI[0] = p.ai;
   bytesNameLength[0] = p.nameLength;
+  return buf;
 }
 
 function generateUpdateData() {
-  var sendBuffer = Buffer.alloc(1024);
+  var buf = Buffer.alloc(1024);
+  let pos = 0;
+  pos += writeBufferUInt8(buf, pos, newUsers.length);
+  for (let i = newUsers.length-1; i >= 0; i--) {
+    pos += writeBufferBuffer(buf, pos, serializeNewPlayer(newUsers.pop()));
+    
+  }
+  pos += writeBufferUInt8(buf, pos, users.length);
+  newUsers.forEach(u => {
+    pos += writeBufferBuffer(buf, pos, serializePlayer(u));
+  });
+  console.log("UPDATE GENERATED, POS: " + pos);
 
 }
 
@@ -314,6 +337,13 @@ function writeBufferVector64(buffer, position, vector) {
   return 16;
 }
 
+function writeBufferBuffer(target, position, source) {
+  var s = new Uint8Array(source);
+  var t = new Uint8Array(target);
+  t.set(s, position);
+  return s.byteLength;
+}
+
 function findUserWithID(id) {
   for (let i = 0; i < users.length; i++) {
     if (id == users[i].id) return users[i];
@@ -333,6 +363,7 @@ function userIDtoIndex(id) {
 function addUser(connection) {
   var user = new User(connection);
   users.push(user);
+  newUsers.push(user);
   userCount++;
   return user;
 
