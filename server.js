@@ -164,7 +164,7 @@ function generateUpdateData() {
     
   }
   pos += writeBufferUInt8(buf, pos, users.length);
-  newUsers.forEach(u => {
+  users.forEach(u => {
     pos += writeBufferBuffer(buf, pos, serializePlayer(u));
   });
   console.log("UPDATE GENERATED, POS: " + pos);
