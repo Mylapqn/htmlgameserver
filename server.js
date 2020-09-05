@@ -21,7 +21,7 @@ wsServer.on('connection', onConnection);
 
 setInterval(() => {
   update();
-}, 1000/30);
+}, 1000 / 30);
 var nextUserID = 0;
 var users = new Array();
 var userCount = 0;
@@ -37,9 +37,9 @@ function User(connection) {
 function Player(user) {
   this.id = user.id;
   this.user = user;
-  this.pos = {x:0,y:0};
-  this.velocity = {x:0,y:0};
-  this.input = {x:0,y:0};
+  this.pos = { x: 0, y: 0 };
+  this.velocity = { x: 0, y: 0 };
+  this.input = { x: 0, y: 0 };
   this.targetRot = 0;
   this.rot = 0;
   this.name = "unnamedPlayer";
@@ -121,14 +121,14 @@ function serializeNewPlayer(user) {
   pos += writeBufferUInt8(buf, pos, p.nameLength);
   pos += writeBufferString(buf, pos, p.nameLength, p.name);
   pos += writeBufferColor(buf, pos, p.color);
-  console.log("Pos: " +pos);
+  console.log("Pos: " + pos);
   return buf;
 }
 
 function serializePlayer(user) {
   let p = user.player;
   let buf = new Buffer(40);
-  let bytesID = new Uint16Array(buf, 0,1);
+  let bytesID = new Uint16Array(buf, 0, 1);
   let bytesAI = new Uint8Array(buf, 2, 1);
   let bytesNameLength = new Uint8Array(buf, 3, 1);
   writeBufferString(buf, 4, p.nameLength, p.name);
@@ -152,11 +152,10 @@ function sendAll(data) {
   });
 }
 
-function onConnection(connection) {
-  console.log((new Date()) + ' Connection from origin ' + connection.socket);
+function onConnection(connection,request) {
+  console.log((new Date()) + ' Connection from origin ' + request);
   var user = addUser(connection);
   connection.on('message', message => {
-    console.log("Message from " + user.id + ":-------: " + message + "|");
     onMessage(message, user.id);
   });
   connection.on('close', e => {
@@ -166,41 +165,46 @@ function onConnection(connection) {
 
 function onMessage(message, userID) {
   var user = findUserWithID(userID);
-  console.log("Message from " + userID + ": ");
+  console.log("Message from " + userID + ":");
   console.log(message);
-  console.log(typeof(message));
 
-    var receiveBuffer = message;
-    console.log("Received message from User " + userID);
-    console.log(receiveBuffer);
-  var type = receiveBuffer.readUInt8(0);
+  var receiveBuffer = message;
+  let pos = 0;
+  var type = readBufferUInt8(receiveBuffer, pos);
+  pos += 1;
   console.log("TYPE:" + type);
-    if (type == 1) {
-      var bytesInput = [receiveBuffer.readDoubleLE(1), receiveBuffer.readDoubleLE(9)];
-      var bytesRot = receiveBuffer.readFloatLE(17);
-      var bytesShooting = receiveBuffer.readUInt8(21);
-      console.log("Inp: " + bytesInput);
-      console.log("Rot: " + bytesRot);
-      console.log("Sht: " + bytesShooting);
-    }
-    if (type == 2) {
-      var nameLength = receiveBuffer.readUInt8(1);
-      var name = readBufferString(receiveBuffer, 2, nameLength);
-      var color = readBufferColor(receiveBuffer, 2 + nameLength);
-      console.log("Nam: " + name);
-      console.log("Col: " + color);
-      if (user.player == undefined) {
-        //user.player = new Player(user);
-        console.log("No player wotrf");
-      }
-      else {
-        user.player.name = name;
-        user.player.color = color;
-        user.player.nameLength = nameLength;
+  if (type == 1) {
+    let input = readBufferVector64(receiveBuffer, pos);
+    pos += 16;
+    let rot = readBufferFloat32(receiveBuffer, pos);
+    pos += 4;
+    let shoot = readBufferUInt8(receiveBuffer, pos);
+    pos += 1;
+    console.log("Inp: " + input);
+    console.log("Rot: " + rot);
+    console.log("Sht: " + shoot);
 
-        serializeNewPlayer(user);
-      }
-    
+  }
+  if (type == 2) {
+    var nameLength = readBufferUInt8(receiveBuffer,pos);
+    pos += 1;
+    var name = readBufferString(receiveBuffer, pos, nameLength);
+    pos += nameLength;
+    var color = readBufferColor(receiveBuffer, pos);
+    console.log("Nam: " + name);
+    console.log("Col: " + color);
+    if (user.player == undefined) {
+      //user.player = new Player(user);
+      console.log("No player wotrf");
+    }
+    else {
+      user.player.name = name;
+      user.player.color = color;
+      user.player.nameLength = nameLength;
+
+      serializeNewPlayer(user);
+    }
+
 
   }
 }
@@ -210,17 +214,60 @@ function onClose(e, userID) {
   removeUser(findUserWithID(userID));
 }
 
-function readBufferColor(buffer, position) {
-  var r = buffer.readUInt8(position);
-  var g = buffer.readUInt8(position + 1);
-  var b = buffer.readUInt8(position + 2);
-  return { r: r, g: g, b: b };
-}
 
 function readBufferString(buffer, position, length) {
-  var bytesString = new Uint8Array(buffer,position,length);
+  var bytesString = new Uint8Array(buffer, position, length);
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;
+}
+
+function readBufferColor(buffer, position) {
+  let bytesColor = new Uint8Array(buffer, position, 3);
+  let color = {
+    r: bytesColor[0],
+    g: bytesColor[1],
+    b: bytesColor[2]
+  }
+  return color;
+}
+
+
+
+function readBufferUInt8(buffer, position) {
+  let bytesInt = new Uint8Array(buffer, position, 1);
+  let value = bytesInt[0];
+  return value;
+}
+function readBufferUInt16(buffer, position) {
+  let bytesInt = new Uint16Array(buffer, position, 1);
+  let value = bytesInt[0];
+  return value;
+}
+function readBufferFloat32(buffer, position) {
+  let bytesFloat = new Float32Array(buffer, position, 1);
+  let value = bytesFloat[0];
+  return value;
+}
+function readBufferFloat64(buffer, position) {
+  let bytesDouble = new Float64Array(buffer, position, 1);
+  let value = bytesDouble[0];
+  return value;
+}
+function readBufferVector32(buffer, position) {
+  let bytesFloat = new Float32Array(buffer, position, 2);
+  let vector = {
+    x: bytesFloat[0],
+    y: bytesFloat[1]
+  }
+  return vector;
+}
+function readBufferVector64(buffer, position) {
+  let bytesDouble = new Float64Array(buffer, position, 2);
+  let vector = {
+    x: bytesDouble[0],
+    y: bytesDouble[1]
+  }
+  return vector;
 }
 
 function writeBufferColor(buffer, position, color) {
@@ -302,7 +349,7 @@ function removeUser(user) {
   }
   users.splice(userIDtoIndex(user.id), 1);
   userCount--;
-  
+
 }
 
 function vector2add(a, b) {
