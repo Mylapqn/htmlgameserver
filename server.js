@@ -18,24 +18,136 @@ wsServer = new WebSocketServer({
 wsServer.on('request', onRequest);
 //#endregion
 
+setInterval(() => {
+  update();
+}, 1000/30);
 var nextUserID = 0;
 var users = new Array();
+var userCount = 0;
 
 function User(connection) {
   this.id = nextUserID;
   nextUserID++;
   this.connection = null;
   return this.id;
+  this.player = new Player(this);
 }
 
+function Player(user) {
+  this.id = user.id;
+  this.user = user;
+  this.pos = {x:0,y:0};
+  this.velocity = {x:0,y:0};
+  this.input = {x:0,y:0};
+  this.targetRot = 0;
+  this.rot = 0;
+  this.name = "unnamed";
+  this.color = { r: 0, g: 0, b: 0 };
+}
 
+var deltaTime = 1 / 30;
+function update() {
+  users.forEach(user => {
+    var player = user.player;
+    player.velocity = vector2add(player.velocity, player.input);
+    player.pos = vector2add(player.pos, player.velocity);
+    player.rot = player.targetRot;
+  });
+}
+
+/*
+UPDATE MSG STRUCTURE:
+  1:NewPlayerCount
+  8-250:[
+    2:id
+    1:ai
+    1:nameLength
+    ?:name
+    3:color
+  ]
+  1:PlayerCount
+  40:[
+    2:id
+    16:pos
+    8:vel
+    4:rot
+    4:hp
+    4:shield
+    2:shipID
+  ]
+  1:NewProjectileCount
+  37:[
+    2:id
+    16:pos
+    8:vel
+    4:rot
+    2:shooterid
+    1:type
+    4:dmg
+  ]
+  2:GuidedProjectileCount
+  37:[
+    2:id
+    16:pos
+    8:vel
+    4:rot
+    2:shooterid
+    1:type
+    4:dmg
+  ]
+  1:HitCount
+  9:[
+    2:id
+    2:projectileID
+    4:dmg
+    1:death
+  ]
+*/
+
+function serializeNewPlayer(user) {
+  let p = user.player;
+  let buf = new Buffer(7 + p.nameLength);
+  let pos = 0;
+  pos += writeBufferUInt16(buf, pos, user.id);
+  pos += writeBufferUInt8(buf, pos, p.ai);
+  pos += writeBufferUInt8(buf, pos, p.nameLength);
+  pos += writeBufferString(buf, pos, p.nameLength, p.name);
+  pos += writeBufferColor(buf, pos, p.color);
+  console.log("Pos: " +pos);
+  return buf;
+}
+
+function serializePlayer(user) {
+  let p = user.player;
+  let buf = new Buffer(40);
+  let bytesID = new Uint16Array(buf, 0,1);
+  let bytesAI = new Uint8Array(buf, 2, 1);
+  let bytesNameLength = new Uint8Array(buf, 3, 1);
+  writeBufferString(buf, 4, p.nameLength, p.name);
+  writeBufferColor(buf, 4 + p.nameLength, p.color);
+
+  bytesID[0] = user.id;
+  bytesAI[0] = p.ai;
+  bytesNameLength[0] = p.nameLength;
+}
+
+function generateUpdateData() {
+  var sendBuffer = new Buffer(1024);
+
+}
+
+function sendAll(data) {
+  users.forEach(u => {
+    if (u.connection != null) {
+      u.connection.send(data);
+    }
+  });
+}
 
 function onRequest(request) {
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
-  var user = new User(connection);
-  users.push(user);
-
+  var user = addUser(connection);
   connection.on('message', message => {
     onMessage(message, user.id);
   });
@@ -45,13 +157,14 @@ function onRequest(request) {
 }
 
 function onMessage(message, userID) {
+  var user = findUserWithID(userID);
 
   if (message.type === 'utf8') {
     messageData = JSON.parse(message.utf8Data);
   }
   if (message.type === "binary") {
     var receiveBuffer = message.binaryData;
-    console.log("Received message from User " + userID)
+    console.log("Received message from User " + userID);
     console.log(receiveBuffer);
     var type = receiveBuffer.readUInt8(0);
     if (type == 1) {
@@ -68,6 +181,11 @@ function onMessage(message, userID) {
       var color = readBufferColor(receiveBuffer, 2 + nameLength);
       console.log("Nam: " + name);
       console.log("Col: " + color);
+      user.player.name = name;
+      user.player.color = color;
+      user.player.nameLength = nameLength;
+
+      serializeNewPlayer(user);
     }
 
   }
@@ -95,6 +213,53 @@ function readBufferString(buffer, position, length) {
   return stringDecoded;
 }
 
+function writeBufferColor(buffer, position, color) {
+  let bytesColor = new Uint8Array(buffer, position, 3);
+  bytesColor[0] = color.r;
+  bytesColor[1] = color.g;
+  bytesColor[2] = color.b;
+  return 3;
+}
+
+function writeBufferString(buffer, position, length, string) {
+  let bytesString = new Uint8Array(buffer, position, length);
+  new textEncoder().encodeInto(string, bytesString);
+  return length;
+}
+
+function writeBufferUInt8(buffer, position, value) {
+  let bytesInt = new Uint8Array(buffer, position, 1);
+  bytesInt[0] = value;
+  return 1;
+}
+function writeBufferUInt16(buffer, position, value) {
+  let bytesInt = new Uint16Array(buffer, position, 1);
+  bytesInt[0] = value;
+  return 2;
+}
+function writeBufferFloat32(buffer, position, value) {
+  let bytesFloat = new Float32Array(buffer, position, 1);
+  bytesFloat[0] = value;
+  return 4;
+}
+function writeBufferFloat64(buffer, position, value) {
+  let bytesDouble = new Float64Array(buffer, position, 1);
+  bytesDouble[0] = value;
+  return 8;
+}
+function writeBufferVector32(buffer, position, vector) {
+  let bytesFloat = new Float32Array(buffer, position, 2);
+  bytesFloat[0] = vector.x;
+  bytesFloat[1] = vector.y;
+  return 8;
+}
+function writeBufferVector64(buffer, position, vector) {
+  let bytesDouble = new Float64Array(buffer, position, 2);
+  bytesDouble[0] = vector.x;
+  bytesDouble[1] = vector.y;
+  return 16;
+}
+
 function findUserWithID(id) {
   for (let i = 0; i < users.length; i++) {
     if (id == users[i].id) return users[i];
@@ -111,6 +276,14 @@ function userIDtoIndex(id) {
   return null;
 }
 
+function addUser(connection) {
+  var user = new User(connection);
+  users.push(user);
+  userCount++;
+  return user;
+
+}
+
 function removeUser(user) {
   if (user.connection != null) {
     if (user.connection.connected) {
@@ -118,5 +291,17 @@ function removeUser(user) {
     }
   }
   users.splice(userIDtoIndex(user.id), 1);
+  userCount--;
   
 }
+
+function vector2add(a, b) {
+  return { x: a.x + b.x, y: a.y + b.y };
+}
+function vector2multiply(vector, number) {
+  return { x: vector.x * number, y: vector.y * number };
+}
+function vector2copy(vector) {
+  return { x: vector.x, y: vector.y };
+}
+
