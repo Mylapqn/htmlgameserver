@@ -16,7 +16,7 @@ server.listen(port, function () {
   closeTimeout: 1000
 });*/
 wsServer = new WebSocketServer({ server });
-wsServer.on('connection', onRequest);
+wsServer.on('connection', onConnection);
 //#endregion
 
 setInterval(() => {
@@ -152,10 +152,8 @@ function sendAll(data) {
   });
 }
 
-function onRequest(e) {
-  let request = e.request;
-  console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
-  var connection = request.accept(null, request.origin);
+function onConnection(connection) {
+  console.log((new Date()) + ' Connection from origin.' + connection.socket);
   var user = addUser(connection);
   connection.on('message', message => {
     onMessage(message, user.id);
