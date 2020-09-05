@@ -49,7 +49,7 @@ var deltaTime = 1 / 30;
 function update() {
   users.forEach(user => {
     var player = user.player;
-    
+
     if (player == undefined) {
       console.log("no player again wtf");
     }
@@ -189,13 +189,16 @@ function onMessage(message, userID) {
       console.log("Nam: " + name);
       console.log("Col: " + color);
       if (user.player == undefined) {
-        console.log("no player wtf");
+        //user.player = new Player(user);
+        console.log("No player wotrf");
       }
-      user.player.name = name;
-      user.player.color = color;
-      user.player.nameLength = nameLength;
+      else {
+        user.player.name = name;
+        user.player.color = color;
+        user.player.nameLength = nameLength;
 
-      serializeNewPlayer(user);
+        serializeNewPlayer(user);
+      }
     }
 
   }
