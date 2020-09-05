@@ -306,7 +306,7 @@ function writeBufferString(buffer, position, length, string) {
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
   console.log("KOOOOOOOOOOOOOOOOOOOOO");
-  console.log(new TextDecoder().decode(bytesString));
+  console.log("|||||||||"+new TextDecoder().decode(bytesString));
   return length;
 }
 
