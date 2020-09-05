@@ -170,11 +170,7 @@ function onMessage(message, userID) {
   console.log(message);
   console.log(typeof(message));
 
-  if (message.type === 'utf8') {
-    messageData = JSON.parse(message.utf8Data);
-  }
-  if (message.type === "binary") {
-    var receiveBuffer = message.binaryData;
+    var receiveBuffer = message;
     console.log("Received message from User " + userID);
     console.log(receiveBuffer);
     var type = receiveBuffer.readUInt8(0);
@@ -203,7 +199,7 @@ function onMessage(message, userID) {
 
         serializeNewPlayer(user);
       }
-    }
+    
 
   }
 }
