@@ -262,7 +262,7 @@ function readBufferVector32(buffer, position) {
 function readBufferVector64(buffer, position) {
   let vector = {
     x: buffer.readDoubleBE(position),
-    y: buffer.readDoubleBE(position)
+    y: buffer.readDoubleBE(position+1)
   }
   return vector;
 }
