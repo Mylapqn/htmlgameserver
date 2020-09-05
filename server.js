@@ -30,7 +30,7 @@ var userCount = 0;
 function User(connection) {
   this.id = nextUserID;
   nextUserID++;
-  this.connection = null;
+  this.connection = connection;
   this.player = new Player(this);
   return this.id;
 }
@@ -66,7 +66,10 @@ function update() {
 
     }
   });
-  generateUpdateData();
+  var data = generateUpdateData();
+  users.forEach(u => {
+    u.connection.send(data);
+  });
 }
 
 /*
@@ -165,6 +168,7 @@ function generateUpdateData() {
     pos += writeBufferBuffer(buf, pos, serializePlayer(u));
   });
   console.log("UPDATE GENERATED, POS: " + pos);
+  return buf.slice(pos);
 
 }
 
