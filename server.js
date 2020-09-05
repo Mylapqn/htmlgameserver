@@ -303,6 +303,7 @@ function writeBufferColor(buffer, position, color) {
 }
 
 function writeBufferString(buffer, position, length, string) {
+  length += 2;
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
   bytesString.set(new TextEncoder().encode(string), 0);
