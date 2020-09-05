@@ -245,24 +245,24 @@ function readBufferUInt16(buffer, position) {
   return value;
 }
 function readBufferFloat32(buffer, position) {
-  let value = buffer.readFloatLE(position);
+  let value = buffer.readFloatBE(position);
   return value;
 }
 function readBufferFloat64(buffer, position) {
-  let value = buffer.readDoubleLE(position);
+  let value = buffer.readDoubleBE(position);
   return value;
 }
 function readBufferVector32(buffer, position) {
   let vector = {
-    x: buffer.readFloatLE(position),
-    y: buffer.readFloatLE(position+1)
+    x: buffer.readFloatBE(position),
+    y: buffer.readFloatBE(position+1)
   }
   return vector;
 }
 function readBufferVector64(buffer, position) {
   let vector = {
-    x: buffer.readDoubleLE(position),
-    y: buffer.readDoubleLE(position)
+    x: buffer.readDoubleBE(position),
+    y: buffer.readDoubleBE(position)
   }
   return vector;
 }
