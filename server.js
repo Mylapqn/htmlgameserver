@@ -21,7 +21,7 @@ wsServer.on('connection', onConnection);
 
 setInterval(() => {
   update();
-}, 1000 / 30);
+}, 1000 / 10);
 var nextUserID = 0;
 var users = new Array();
 var newUsers = new Array();
