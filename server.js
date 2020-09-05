@@ -2,20 +2,21 @@
 var http = require('http');
 var server = http.createServer(function (request, response) {
 });
-var WebSocketServer = require('websocket').server;
+var WebSocketServer = require('ws').Server;
 var port = 20002;
 var listenAddress = "wss://stuffgame.ws.coal.games/";
 server.listen(port, function () {
   console.log((new Date()) + " WS Server is listening on address " + listenAddress + " and port " + port);
 });
 
-wsServer = new WebSocketServer({
+/*wsServer = new WebSocketServer({
   httpServer: server,
   keepaliveInterval: 5000,
   keepaliveGracePeriod: 1000,
   closeTimeout: 1000
-});
-wsServer.on('request', onRequest);
+});*/
+wsServer = new WebSocketServer({ server });
+wsServer.on('connection', onRequest);
 //#endregion
 
 setInterval(() => {
@@ -151,7 +152,8 @@ function sendAll(data) {
   });
 }
 
-function onRequest(request) {
+function onRequest(e) {
+  let request = e.request;
   console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
   var connection = request.accept(null, request.origin);
   var user = addUser(connection);
