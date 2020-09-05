@@ -29,8 +29,8 @@ function User(connection) {
   this.id = nextUserID;
   nextUserID++;
   this.connection = null;
-  return this.id;
   this.player = new Player(this);
+  return this.id;
 }
 
 function Player(user) {
