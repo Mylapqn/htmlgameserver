@@ -168,7 +168,8 @@ function onMessage(message, userID) {
   console.log("Message from " + userID + ":");
   console.log(message);
 
-  var receiveBuffer = message.buffer.slice(message.byteOffset,message.byteOffset+message.byteLength);
+  //var receiveBuffer = message.buffer.slice(message.byteOffset,message.byteOffset+message.byteLength);
+  var receiveBuffer = message;
   console.log(receiveBuffer);
   var pos = 0;
   var type = readBufferUInt8(receiveBuffer, pos);
@@ -224,11 +225,10 @@ function readBufferString(buffer, position, length) {
 }
 
 function readBufferColor(buffer, position) {
-  let bytesColor = new Uint8Array(buffer, position, 3);
   let color = {
-    r: bytesColor[0],
-    g: bytesColor[1],
-    b: bytesColor[2]
+    r: buffer.readUInt8(position),
+    g: buffer.readUInt8(position+1),
+    b: buffer.readUInt8(position+2)
   }
   return color;
 }
@@ -236,40 +236,33 @@ function readBufferColor(buffer, position) {
 
 
 function readBufferUInt8(buffer, position) {
-  let bytesInt = new Uint8Array(buffer, position, 1);
-  let value = bytesInt[0];
-  console.log("UINT: " + bytesInt.byteOffset + " " + bytesInt.length);
-  console.log(bytesInt);
+  let value = buffer.readUInt8(position);
   return value;
 }
 function readBufferUInt16(buffer, position) {
-  let bytesInt = new Uint16Array(buffer, position, 1);
-  let value = bytesInt[0];
+
+  let value = buffer.readUInt16(position);
   return value;
 }
 function readBufferFloat32(buffer, position) {
-  let bytesFloat = new Float32Array(buffer, position, 1);
-  let value = bytesFloat[0];
+  let value = buffer.readFloatLE(position);
   return value;
 }
 function readBufferFloat64(buffer, position) {
-  let bytesDouble = new Float64Array(buffer, position, 1);
-  let value = bytesDouble[0];
+  let value = buffer.readDoubleLE(position);
   return value;
 }
 function readBufferVector32(buffer, position) {
-  let bytesFloat = new Float32Array(buffer, position, 2);
   let vector = {
-    x: bytesFloat[0],
-    y: bytesFloat[1]
+    x: buffer.readFloatLE(position),
+    y: buffer.readFloatLE(position+1)
   }
   return vector;
 }
 function readBufferVector64(buffer, position) {
-  let bytesDouble = new Float64Array(buffer, position, 2);
   let vector = {
-    x: bytesDouble[0],
-    y: bytesDouble[1]
+    x: buffer.readDoubleLE(position),
+    y: buffer.readDoubleLE(position)
   }
   return vector;
 }
