@@ -169,7 +169,7 @@ function onMessage(message, userID) {
   console.log(message);
 
   var receiveBuffer = message;
-  let pos = 0;
+  var pos = 0;
   var type = readBufferUInt8(receiveBuffer, pos);
   pos += 1;
   console.log("TYPE:" + type);
@@ -191,7 +191,7 @@ function onMessage(message, userID) {
     var name = readBufferString(receiveBuffer, pos, nameLength);
     pos += nameLength;
     var color = readBufferColor(receiveBuffer, pos);
-    
+
     console.log("Nam: " + name);
     console.log("Col: " + color);
     if (user.player == undefined) {
