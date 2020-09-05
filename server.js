@@ -231,6 +231,7 @@ function onMessage(message, userID) {
       user.player.name = name;
       user.player.color = color;
       user.player.nameLength = nameLength;
+      newUsers.push(user);
 
     }
 
@@ -366,7 +367,6 @@ function userIDtoIndex(id) {
 function addUser(connection) {
   var user = new User(connection);
   users.push(user);
-  newUsers.push(user);
   userCount++;
   return user;
 
