@@ -156,8 +156,10 @@ function generateUpdateData() {
   var buf = new ArrayBuffer(1024);
   let pos = 0;
   pos += writeBufferUInt8(buf, pos, newUsers.length);
-  for (let i = newUsers.length-1; i >= 0; i--) {
-    pos += writeBufferBuffer(buf, pos, serializeNewPlayer(newUsers.pop()));
+  for (let i = newUsers.length - 1; i >= 0; i--) {
+    let u = newUsers.pop();
+    console.log("SERIALISING NEW USER " + u.id);
+    pos += writeBufferBuffer(buf, pos, serializeNewPlayer(u));
     
   }
   pos += writeBufferUInt8(buf, pos, users.length);
@@ -229,7 +231,6 @@ function onMessage(message, userID) {
       user.player.color = color;
       user.player.nameLength = nameLength;
 
-      serializeNewPlayer(user);
     }
 
 
