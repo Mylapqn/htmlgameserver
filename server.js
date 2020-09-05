@@ -153,7 +153,7 @@ function serializePlayer(user) {
 }
 
 function generateUpdateData() {
-  var buf = Buffer.alloc(1024);
+  var buf = new ArrayBuffer(1024);
   let pos = 0;
   pos += writeBufferUInt8(buf, pos, newUsers.length);
   for (let i = newUsers.length-1; i >= 0; i--) {
