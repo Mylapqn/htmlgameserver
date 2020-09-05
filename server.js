@@ -180,7 +180,7 @@ function onMessage(message, userID) {
     pos += 4;
     let shoot = readBufferUInt8(receiveBuffer, pos);
     pos += 1;
-    console.log("Inp: " + input);
+    console.log("Inp: " + input.x + " " + input.y);
     console.log("Rot: " + rot);
     console.log("Sht: " + shoot);
 
@@ -191,6 +191,7 @@ function onMessage(message, userID) {
     var name = readBufferString(receiveBuffer, pos, nameLength);
     pos += nameLength;
     var color = readBufferColor(receiveBuffer, pos);
+    
     console.log("Nam: " + name);
     console.log("Col: " + color);
     if (user.player == undefined) {
