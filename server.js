@@ -166,7 +166,9 @@ function onConnection(connection) {
 
 function onMessage(message, userID) {
   var user = findUserWithID(userID);
-  console.log("Message from " + userID + ": " + message.data);
+  console.log("Message from " + userID + ": ");
+  console.log(message);
+  console.log(typeof(message));
 
   if (message.type === 'utf8') {
     messageData = JSON.parse(message.utf8Data);
