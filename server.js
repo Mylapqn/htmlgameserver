@@ -310,7 +310,6 @@ function writeBufferUInt8(buffer, position, value) {
   return 1;
 }
 function writeBufferUInt16(buffer, position, value) {
-  console.log("FUKIJERFW: " + position + " " + buffer.byteLength);
   let bytesInt = new DataView(buffer, position,2);
   bytesInt.setUint16(0, value);
   return 2;
