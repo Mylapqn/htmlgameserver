@@ -145,7 +145,7 @@ function serializePlayer(user) {
   pos += writeBufferFloat32(buf, pos, p.hp);
   pos += writeBufferFloat32(buf, pos, p.shieldHP);
   pos += writeBufferFloat32(buf, pos, p.shieldEnabled);
-  pos += writeBufferUInt16(but, pos, p.shipID);
+  pos += writeBufferUInt16(buf, pos, p.shipID);
 
   bytesID[0] = user.id;
   bytesAI[0] = p.ai;
