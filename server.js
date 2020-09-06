@@ -147,7 +147,7 @@ function serializePlayer(user) {
   let pos = 0;
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferVector64(buf, pos, p.pos);
-  pos += writeBufferVector64(buf, pos, p.velocity);
+  pos += writeBufferVector32(buf, pos, p.velocity);
   pos += writeBufferFloat32(buf, pos, p.rot);
   pos += writeBufferFloat32(buf, pos, p.hp);
   pos += writeBufferFloat32(buf, pos, p.shieldHP);
