@@ -59,6 +59,7 @@ function update() {
     if (player == undefined) {
     }
     else {
+      console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x);
       player.velocity = vector2add(player.velocity, player.input);
       player.pos = vector2add(player.pos, player.velocity);
       player.rot = player.targetRot;
@@ -147,7 +148,7 @@ function serializePlayer(user) {
   pos += writeBufferFloat32(buf, pos, p.rot);
   pos += writeBufferFloat32(buf, pos, p.hp);
   pos += writeBufferFloat32(buf, pos, p.shieldHP);
-  pos += writeBufferFloat32(buf, pos, p.shieldEnabled);
+  pos += writeBufferUInt8(buf, pos, p.shieldEnabled);
   pos += writeBufferUInt16(buf, pos, p.shipID);
 
   return buf;
