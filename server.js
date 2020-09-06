@@ -124,13 +124,13 @@ UPDATE MSG STRUCTURE:
 
 function serializeNewPlayer(user) {
   let p = user.player;
-  let buf = new ArrayBuffer(7 + p.nameLength + 5);
+  let buf = new ArrayBuffer(7 + p.nameLength);
   let pos = 0;
   console.log("TRYING SERIALISATION " + p.id + " " + buf.byteLength + " " + p.nameLength);
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferUInt8(buf, pos, p.ai);
-  pos += writeBufferUInt8(buf, pos, p.nameLength + 5);
-  pos += writeBufferString(buf, pos, p.nameLength + 5, p.name);
+  pos += writeBufferUInt8(buf, pos, p.nameLength);
+  pos += writeBufferString(buf, pos, p.nameLength, p.name);
   pos += writeBufferColor(buf, pos, p.color);
   console.log("NEW PLAYER SERIALISED");
   console.log("Pos: " + pos);
@@ -217,6 +217,7 @@ function onMessage(message, userID) {
   }
   if (type == 2) {
     var nameLength = readBufferUInt8(receiveBuffer, pos);
+    console.log("AKLKKKKKKKKKKKKKKKKKKKKKKKKK" + nameLength);
     pos += 1;
     var name = readBufferString(receiveBuffer, pos, nameLength);
     pos += nameLength;
