@@ -62,8 +62,8 @@ function update() {
     else {
       console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x + "ROT: "+player.rot);
 
-      player.velocity.x += (Math.cos(player.rot) - Math.sin(player.rot)) * player.input.x * deltaTime * player.thrust;
-      player.velocity.y += (Math.cos(player.rot) + Math.sin(player.rot)) * player.input.y * deltaTime * player.thrust;
+      player.velocity.x += (Math.cos(player.rot)*player.input.x - Math.sin(player.rot) * player.input.y) * deltaTime * player.thrust;
+      player.velocity.y += (Math.cos(player.rot)*player.input.y + Math.sin(player.rot) * player.input.x) * deltaTime * player.thrust;
       player.pos = vector2add(player.pos, vector2multiply(player.velocity,deltaTime));
       //player.rot = player.targetRot;
       //console.log("Velocity of player "+player.id+": "+player.velocity.x);
