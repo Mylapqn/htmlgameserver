@@ -124,13 +124,13 @@ UPDATE MSG STRUCTURE:
 
 function serializeNewPlayer(user) {
   let p = user.player;
-  let buf = new ArrayBuffer(7 + p.nameLength+5);
+  let buf = new ArrayBuffer(7 + p.nameLength + 5);
   let pos = 0;
   console.log("TRYING SERIALISATION " + p.id + " " + buf.byteLength + " " + p.nameLength);
   pos += writeBufferUInt16(buf, pos, user.id);
   pos += writeBufferUInt8(buf, pos, p.ai);
-  pos += writeBufferUInt8(buf, pos, p.nameLength+5);
-  pos += writeBufferString(buf, pos, p.nameLength+5, p.name);
+  pos += writeBufferUInt8(buf, pos, p.nameLength + 5);
+  pos += writeBufferString(buf, pos, p.nameLength + 5, p.name);
   pos += writeBufferColor(buf, pos, p.color);
   console.log("NEW PLAYER SERIALISED");
   console.log("Pos: " + pos);
@@ -161,14 +161,14 @@ function generateUpdateData() {
     let u = newUsers.pop();
     console.log("SERIALISING NEW USER " + u.id);
     pos += writeBufferBuffer(buf, pos, serializeNewPlayer(u));
-    
+
   }
   pos += writeBufferUInt8(buf, pos, users.length);
   users.forEach(u => {
     pos += writeBufferBuffer(buf, pos, serializePlayer(u));
   });
   console.log("UPDATE GENERATED, POS: " + pos);
-  return buf.slice(0,pos);
+  return buf.slice(0, pos);
 
 }
 
@@ -180,7 +180,7 @@ function sendAll(data) {
   });
 }
 
-function onConnection(connection,request) {
+function onConnection(connection, request) {
   console.log((new Date()) + ' Connection from origin ' + request);
   var user = addUser(connection);
   connection.on('message', message => {
@@ -216,7 +216,7 @@ function onMessage(message, userID) {
 
   }
   if (type == 2) {
-    var nameLength = readBufferUInt8(receiveBuffer,pos);
+    var nameLength = readBufferUInt8(receiveBuffer, pos);
     pos += 1;
     var name = readBufferString(receiveBuffer, pos, nameLength);
     pos += nameLength;
@@ -229,6 +229,15 @@ function onMessage(message, userID) {
       console.log("No player wotrf");
     }
     else {
+      let print = "==|";
+      for (let i = 0; i < name.length; i++) {
+        print += name[i];
+        print += "|"
+
+      }
+      print += "|=="
+      console.log(print);
+
       user.player.name = name;
       user.player.color = color;
       user.player.nameLength = nameLength;
@@ -255,8 +264,8 @@ function readBufferString(buffer, position, length) {
 function readBufferColor(buffer, position) {
   let color = {
     r: buffer.readUInt8(position),
-    g: buffer.readUInt8(position+1),
-    b: buffer.readUInt8(position+2)
+    g: buffer.readUInt8(position + 1),
+    b: buffer.readUInt8(position + 2)
   }
   return color;
 }
@@ -283,14 +292,14 @@ function readBufferFloat64(buffer, position) {
 function readBufferVector32(buffer, position) {
   let vector = {
     x: buffer.readFloatBE(position),
-    y: buffer.readFloatBE(position+4)
+    y: buffer.readFloatBE(position + 4)
   }
   return vector;
 }
 function readBufferVector64(buffer, position) {
   let vector = {
     x: buffer.readDoubleBE(position),
-    y: buffer.readDoubleBE(position+8)
+    y: buffer.readDoubleBE(position + 8)
   }
   return vector;
 }
@@ -308,17 +317,17 @@ function writeBufferString(buffer, position, length, string) {
   let print = "--|";
   for (let i = 0; i < string.length; i++) {
     print += string[i];
-    print +="|"
-    
+    print += "|"
+
   }
   print += "|--"
   console.log(print);
-  console.log("POPPPPPPPPPPPPPPPPPPPP"+string.length+" "+new TextEncoder().encode(string).byteLength+" "+length);
+  console.log("POPPPPPPPPPPPPPPPPPPPP" + string.length + " " + new TextEncoder().encode(string).byteLength + " " + length);
   bytesString.set(new TextEncoder().encode(string), 0);
-  console.log("iiiiiiiii"+new TextDecoder().decode(new TextEncoder().encode(string)));
+  console.log("iiiiiiiii" + new TextDecoder().decode(new TextEncoder().encode(string)));
   console.log("KOOOOOOOOOOOOOOOOOOOOO");
-  console.log("lllllllll"+string);
-  console.log("|||||||||"+new TextDecoder().decode(bytesString));
+  console.log("lllllllll" + string);
+  console.log("|||||||||" + new TextDecoder().decode(bytesString));
   return length;
 }
 
@@ -328,7 +337,7 @@ function writeBufferUInt8(buffer, position, value) {
   return 1;
 }
 function writeBufferUInt16(buffer, position, value) {
-  let bytesInt = new DataView(buffer, position,2);
+  let bytesInt = new DataView(buffer, position, 2);
   bytesInt.setUint16(0, value);
   return 2;
 }
