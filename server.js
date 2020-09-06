@@ -217,7 +217,6 @@ function onMessage(message, userID) {
   }
   if (type == 2) {
     var nameLength = readBufferUInt8(receiveBuffer, pos);
-    console.log("AKLKKKKKKKKKKKKKKKKKKKKKKKKK" + nameLength);
     pos += 1;
     var name = readBufferString(receiveBuffer, pos, nameLength);
     pos += nameLength;
@@ -262,7 +261,7 @@ function readBufferString(buffer, position, length) {
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;*/
 
-  return buffer.toString("utf8",position, length);
+  return buffer.toString("utf8",position, length+position);
 }
 
 function readBufferColor(buffer, position) {
