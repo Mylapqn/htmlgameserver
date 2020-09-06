@@ -124,7 +124,7 @@ UPDATE MSG STRUCTURE:
 
 function serializeNewPlayer(user) {
   let p = user.player;
-  let buf = new ArrayBuffer(7 + p.nameLength);
+  let buf = new ArrayBuffer(7 + p.nameLength+5);
   let pos = 0;
   console.log("TRYING SERIALISATION " + p.id + " " + buf.byteLength + " " + p.nameLength);
   pos += writeBufferUInt16(buf, pos, user.id);
@@ -305,7 +305,7 @@ function writeBufferColor(buffer, position, color) {
 function writeBufferString(buffer, position, length, string) {
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
-  console.log(new TextEncoder().encode(string).byteLength+" "+length);
+  console.log("POPPPPPPPPPPPPPPPPPPPP"+new TextEncoder().encode(string).byteLength+" "+length);
   bytesString.set(new TextEncoder().encode(string), 0);
   console.log("iiiiiiiii"+new TextDecoder().decode(new TextEncoder().encode(string)));
   console.log("KOOOOOOOOOOOOOOOOOOOOO");
