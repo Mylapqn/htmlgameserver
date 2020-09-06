@@ -237,7 +237,7 @@ function onMessage(message, userID) {
 
       }
       print += "|=="
-      console.log(print);
+      console.log(print + name.length + " "+nameLength);
 
       user.player.name = name;
       user.player.color = color;
@@ -261,7 +261,8 @@ function readBufferString(buffer, position, length) {
   console.log("------------------", bytesString);
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;*/
-  return buffer.toString("utf8",position, length+2);
+
+  return buffer.toString("utf8",position, length);
 }
 
 function readBufferColor(buffer, position) {
