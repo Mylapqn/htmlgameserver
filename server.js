@@ -214,6 +214,8 @@ function onMessage(message, userID) {
     console.log("Inp: " + input.x + " " + input.y);
     console.log("Rot: " + rot);
     console.log("Sht: " + shoot);
+    if(user.player !=undefined)
+    user.player.input = input;
 
   }
   if (type == 2) {
