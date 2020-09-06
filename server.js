@@ -361,6 +361,9 @@ function writeBufferVector32(buffer, position, vector) {
   let bytesFloat = new DataView(buffer, position, 8);
   bytesFloat.setFloat32(0, vector.x);
   bytesFloat.setFloat32(4, vector.y);
+  console.log("WRITING VECTOR 32:");
+  console.log(vector);
+  console.log(bytesFloat);
   return 8;
 }
 function writeBufferVector64(buffer, position, vector) {
