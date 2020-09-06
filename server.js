@@ -61,7 +61,9 @@ function update() {
     }
     else {
       console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x);
-      player.velocity = vector2add(player.velocity, vector2multiply(player.input,deltaTime*player.thrust));
+
+      player.velocity.x += (Math.cos(player.rot) - Math.sin(player.rot)) * player.input.x * deltaTime * player.thrust;
+      player.velocity.y += (Math.cos(player.rot) + Math.sin(player.rot)) * player.input.y * deltaTime * player.thrust;
       player.pos = vector2add(player.pos, vector2multiply(player.velocity,deltaTime));
       player.rot = player.targetRot;
       //console.log("Velocity of player "+player.id+": "+player.velocity.x);
@@ -215,8 +217,10 @@ function onMessage(message, userID) {
     console.log("Inp: " + input.x + " " + input.y);
     console.log("Rot: " + rot);
     console.log("Sht: " + shoot);
-    if(user.player !=undefined)
-    user.player.input = input;
+    if (user.player != undefined) {
+      user.player.input = input;
+      user.player.rot = rot;
+    }
 
   }
   if (type == 2) {
