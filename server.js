@@ -260,7 +260,7 @@ function readBufferString(buffer, position, length) {
   console.log("------------------", bytesString);
   var stringDecoded = new TextDecoder().decode(bytesString);
   return stringDecoded;*/
-  return buffer.toString(position, length);
+  return buffer.toString("utf8",position, length);
 }
 
 function readBufferColor(buffer, position) {
