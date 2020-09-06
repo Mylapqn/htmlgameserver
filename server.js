@@ -256,10 +256,11 @@ function onClose(e, userID) {
 
 
 function readBufferString(buffer, position, length) {
-  var bytesString = new Uint8Array(buffer, position, length);
+  /*var bytesString = new Uint8Array(buffer, position, length);
   console.log("------------------", bytesString);
   var stringDecoded = new TextDecoder().decode(bytesString);
-  return stringDecoded;
+  return stringDecoded;*/
+  return buffer.toString(position, length);
 }
 
 function readBufferColor(buffer, position) {
