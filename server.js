@@ -60,7 +60,7 @@ function update() {
     if (player == undefined) {
     }
     else {
-      console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x);
+      console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x + "ROT: "+player.rot);
 
       player.velocity.x += (Math.cos(player.rot) - Math.sin(player.rot)) * player.input.x * deltaTime * player.thrust;
       player.velocity.y += (Math.cos(player.rot) + Math.sin(player.rot)) * player.input.y * deltaTime * player.thrust;
