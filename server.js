@@ -60,7 +60,7 @@ function update() {
     if (player == undefined) {
     }
     else {
-      console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x + "ROT: "+player.rot);
+      //console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x + "ROT: "+player.rot);
 
       player.velocity.x += (Math.cos(player.rot)*player.input.x - Math.sin(player.rot) * player.input.y) * deltaTime * player.thrust;
       player.velocity.y += (Math.cos(player.rot)*player.input.y + Math.sin(player.rot) * player.input.x) * deltaTime * player.thrust;
@@ -163,7 +163,7 @@ function generateUpdateData() {
   pos += writeBufferUInt8(buf, pos, newUsers.length);
   for (let i = newUsers.length - 1; i >= 0; i--) {
     let u = newUsers.pop();
-    console.log("SERIALISING NEW USER " + u.id);
+    //console.log("SERIALISING NEW USER " + u.id);
     pos += writeBufferBuffer(buf, pos, serializeNewPlayer(u));
 
   }
@@ -171,7 +171,7 @@ function generateUpdateData() {
   users.forEach(u => {
     pos += writeBufferBuffer(buf, pos, serializePlayer(u));
   });
-  console.log("UPDATE GENERATED, POS: " + pos);
+  //console.log("UPDATE GENERATED, POS: " + pos);
   return buf.slice(0, pos);
 
 }
@@ -197,16 +197,16 @@ function onConnection(connection, request) {
 
 function onMessage(message, userID) {
   var user = findUserWithID(userID);
-  console.log("Message from " + userID + ":");
-  console.log(message);
+  //console.log("Message from " + userID + ":");
+  //console.log(message);
 
   //var receiveBuffer = message.buffer.slice(message.byteOffset,message.byteOffset+message.byteLength);
   var receiveBuffer = message;
-  console.log(receiveBuffer);
+  //console.log(receiveBuffer);
   var pos = 0;
   var type = readBufferUInt8(receiveBuffer, pos);
   pos += 1;
-  console.log("TYPE:" + type);
+  //console.log("TYPE:" + type);
   if (type == 1) {
     let input = readBufferVector32(receiveBuffer, pos);
     pos += 8;
@@ -214,9 +214,9 @@ function onMessage(message, userID) {
     pos += 4;
     let shoot = readBufferUInt8(receiveBuffer, pos);
     pos += 1;
-    console.log("Inp: " + input.x + " " + input.y);
+    /*console.log("Inp: " + input.x + " " + input.y);
     console.log("Rot: " + rot);
-    console.log("Sht: " + shoot);
+    console.log("Sht: " + shoot);*/
     if (user.player != undefined) {
       user.player.input = input;
       user.player.rot = rot;
@@ -329,7 +329,7 @@ function writeBufferColor(buffer, position, color) {
 function writeBufferString(buffer, position, length, string) {
   let bytesString = new Uint8Array(buffer, position, length);
   new TextEncoder().encodeInto(string, bytesString);
-  let print = "--|";
+  /*let print = "--|";
   for (let i = 0; i < string.length; i++) {
     print += string[i];
     print += "|"
@@ -342,7 +342,7 @@ function writeBufferString(buffer, position, length, string) {
   console.log("iiiiiiiii" + new TextDecoder().decode(new TextEncoder().encode(string)));
   console.log("KOOOOOOOOOOOOOOOOOOOOO");
   console.log("lllllllll" + string);
-  console.log("|||||||||" + new TextDecoder().decode(bytesString));
+  console.log("|||||||||" + new TextDecoder().decode(bytesString));*/
   return length;
 }
 
@@ -370,9 +370,9 @@ function writeBufferVector32(buffer, position, vector) {
   let bytesFloat = new DataView(buffer, position, 8);
   bytesFloat.setFloat32(0, vector.x);
   bytesFloat.setFloat32(4, vector.y);
-  console.log("WRITING VECTOR 32:");
+  /*console.log("WRITING VECTOR 32:");
   console.log(vector);
-  console.log(bytesFloat);
+  console.log(bytesFloat);*/
   return 8;
 }
 function writeBufferVector64(buffer, position, vector) {
