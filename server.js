@@ -21,7 +21,7 @@ wsServer.on('connection', onConnection);
 
 setInterval(() => {
   update();
-}, 1000 / 1);
+}, 1000 / 30);
 var nextUserID = 0;
 var users = new Array();
 var newUsers = new Array();
@@ -49,6 +49,7 @@ function Player(user) {
   this.shieldHP = 5;
   this.shieldEnabled = true;
   this.shipID = 0;
+  this.thrust = 1000;
 }
 
 var deltaTime = 1 / 30;
@@ -60,8 +61,8 @@ function update() {
     }
     else {
       console.log("UPDATING PLAYER " + player.id + " INPX:" + player.input.x + " VELX:" + player.velocity.x);
-      player.velocity = vector2add(player.velocity, player.input);
-      player.pos = vector2add(player.pos, player.velocity);
+      player.velocity = vector2add(player.velocity, vector2multiply(player.input,deltaTime));
+      player.pos = vector2add(player.pos, vector2multiply(player.velocity,deltaTime));
       player.rot = player.targetRot;
       //console.log("Velocity of player "+player.id+": "+player.velocity.x);
 
@@ -257,6 +258,7 @@ function onClose(e, userID) {
   removeUser(findUserWithID(userID));
 }
 
+//#region READ FUNCTIONS
 
 function readBufferString(buffer, position, length) {
   /*var bytesString = new Uint8Array(buffer, position, length);
@@ -309,6 +311,9 @@ function readBufferVector64(buffer, position) {
   }
   return vector;
 }
+//#endregion
+//#region WRITE FUNCTIONS
+
 function writeBufferColor(buffer, position, color) {
   let bytesColor = new Uint8Array(buffer, position, 3);
   bytesColor[0] = color.r;
@@ -379,6 +384,7 @@ function writeBufferBuffer(target, position, source) {
   t.set(s, position);
   return s.byteLength;
 }
+//#endregion
 
 function findUserWithID(id) {
   for (let i = 0; i < users.length; i++) {
